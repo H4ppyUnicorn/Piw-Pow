@@ -9,7 +9,7 @@ background = transform.scale(image.load('doggo.jpg'), (win_width, win_height))
 game = True
 finish = False
 clock = time.Clock()
-FPS = 30
+FPS = 60
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
@@ -26,18 +26,22 @@ class Player(GameSprite):
         keys = key.get_pressed()
         if keys[K_UP] and self.rect.y > 5:
             self.rect.y -= self.speed
-        if keys[K_DOWN] and self.rect.y < win_height - 80:
+        if keys[K_DOWN] and self.rect.y < win_height - 200:
             self.rect.y += self.speed
     def update_l(self):
         keys = key.get_pressed()
         if keys[K_w] and self.rect.y > 5:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y < win_height - 80:
+        if keys[K_s] and self.rect.y < win_height - 200:
             self.rect.y += self.speed
     
 
-Pong1 = Player('leftpong.png',0,120,100,300,15)
-Pong2 = Player('rightpong.png',500,120,100,300,15)
+Pong1 = Player('recta.png',0,120,70,200,7.5)
+Pong2 = Player('recta.png',530,120,70,200,7.5)
+BallsInYoJaws = GameSprite('Balls.png',250,200,40,40,16)
+
+dx = 3
+dy = 3
 
 while game:
     for e in event.get():
@@ -49,8 +53,18 @@ while game:
         Pong1.update_l()
         Pong2.update_r()
 
+        BallsInYoJaws.rect.x += dx
+        BallsInYoJaws.rect.y += dy
+
+        if sprite.collide_rect(Pong1,BallsInYoJaws) or sprite.collide_rect(Pong2,BallsInYoJaws):
+            dx *= -1
+        if BallsInYoJaws.rect.y < 0 or BallsInYoJaws.rect.y > win_height-40:
+            dy *= -1
+
+
         Pong1.reset()
         Pong2.reset()
+        BallsInYoJaws.reset()
     
     display.update()
     clock.tick(FPS)
