@@ -6,17 +6,17 @@ window = display.set_mode((win_width, win_height))
 window.fill(back)
 background = transform.scale(image.load('doggo.jpg'), (win_width, win_height))
 
-
 game = True
 finish = False
 clock = time.Clock()
-FPS = 60
+FPS = 30
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
-        sprite.Sprite.__init__(self)
+        super().__init__()
         self.image = transform.scale(image.load(player_image), (size_x, size_y))
         self.speed = player_speed
+        self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
     def reset(self):
@@ -36,12 +36,21 @@ class Player(GameSprite):
             self.rect.y += self.speed
     
 
+Pong1 = Player('leftpong.png',0,120,100,300,15)
+Pong2 = Player('rightpong.png',500,120,100,300,15)
+
 while game:
     for e in event.get():
         if e.type == QUIT:
             game = False
-    
-    window.blit(background,(0,0))
+    if finish != True:
+        window.fill(back)
+
+        Pong1.update_l()
+        Pong2.update_r()
+
+        Pong1.reset()
+        Pong2.reset()
     
     display.update()
     clock.tick(FPS)
