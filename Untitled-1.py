@@ -4,7 +4,6 @@ win_width = 600
 win_height = 500
 window = display.set_mode((win_width, win_height))
 window.fill(back)
-background = transform.scale(image.load('doggo.jpg'), (win_width, win_height))
 
 game = True
 finish = False
