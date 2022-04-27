@@ -8,7 +8,16 @@ window.fill(back)
 game = True
 finish = False
 clock = time.Clock()
-FPS = 60
+FPS = 90
+
+font.init()
+font = font.Font(None, 35)
+
+lose1 = font.render('PLAYER 1 LOSE!', True,(180,0,0))
+lose2 = font.render('PLAYER 2 LOSE!', True,(180,0,0))
+
+Pscore1 = 0
+Pscore2 = 0
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
@@ -23,20 +32,20 @@ class GameSprite(sprite.Sprite):
 class Player(GameSprite):
     def update_r(self):
         keys = key.get_pressed()
-        if keys[K_UP] and self.rect.y > 5:
+        if keys[K_UP] and self.rect.y > 0:
             self.rect.y -= self.speed
-        if keys[K_DOWN] and self.rect.y < win_height - 200:
+        if keys[K_DOWN] and self.rect.y < win_height - 150:
             self.rect.y += self.speed
     def update_l(self):
         keys = key.get_pressed()
-        if keys[K_w] and self.rect.y > 5:
+        if keys[K_w] and self.rect.y > 0:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y < win_height - 200:
+        if keys[K_s] and self.rect.y < win_height - 150:
             self.rect.y += self.speed
     
 
-Pong1 = Player('recta.png',0,120,20,200,5)
-Pong2 = Player('recta.png',580,120,20,200,5)
+Pong1 = Player('recta.png',0,120,20,150,5)
+Pong2 = Player('recta.png',580,120,20,150,5)
 BallsInYoJaws = GameSprite('Balls.png',250,200,40,40,16)
 
 dx = 3
@@ -56,9 +65,26 @@ while game:
         BallsInYoJaws.rect.y += dy
 
         if sprite.collide_rect(Pong1,BallsInYoJaws) or sprite.collide_rect(Pong2,BallsInYoJaws):
-            dx *= ballspeed - 0.1
+            dx *= ballspeed
         if BallsInYoJaws.rect.y < 0 or BallsInYoJaws.rect.y > win_height-40:
             dy *= -1
+
+        score_l = font.render(str(Pscore1), True, (255,255,255))
+        score_r = font.render(str(Pscore2), True, (255,255,255))
+        window.blit(score_l,(30,10))
+        window.blit(score_r,(win_width-45,10))
+
+        if BallsInYoJaws.rect.x < -50:
+            Pscore2 += 1
+            BallsInYoJaws.rect.x = 280
+            BallsInYoJaws.rect.x = 280
+            ballspeed = -1
+
+        if BallsInYoJaws.rect.x > win_width +10:
+            Pscore1 += 1
+            BallsInYoJaws.rect.x = 280
+            BallsInYoJaws.rect.x = 280
+            ballspeed = -1
 
         Pong1.reset()
         Pong2.reset()
