@@ -9,7 +9,6 @@ mixer.music.set_volume(0.2)
 mixer.music.play()
 ssound = mixer.Sound('Rocket.ogg')
 msound = mixer.Sound('Miss.ogg')
-
 game = True
 finish = False
 clock = time.Clock()
@@ -40,11 +39,15 @@ class GameSprite(sprite.Sprite):
 class Player(GameSprite):
     def update_r(self):
         keys = key.get_pressed()
+        if self.rect.y < win_height - 100:
+            self.rect.y += 1
         if keys[K_UP] and self.rect.y > -10:
             self.rect.y -= self.speed
         if keys[K_DOWN] and self.rect.y < win_height - 100:
             self.rect.y += self.speed
     def update_l(self):
+        if self.rect.y < win_height - 100:
+            self.rect.y += 1
         keys = key.get_pressed()
         if keys[K_w] and self.rect.y > -10:
             self.rect.y -= self.speed
@@ -54,7 +57,7 @@ class Player(GameSprite):
 
 Pong1 = Player('rocketaL.png',0,180,80,150,4)
 Pong2 = Player('rocketaR.png',520,180,80,150,4)
-BallsInYoJaws = GameSprite('Balls.png',250,200,40,40,25)
+BallsInYoJaws = GameSprite('Balls.png',250,200,40,40,30)
 
 dx = 3
 dy = 3
@@ -78,10 +81,14 @@ while game:
         if BallsInYoJaws.rect.y < 0 or BallsInYoJaws.rect.y > win_height-40:
             dy *= -1
 
-        score_l = font.render(str(Pscore1), True, (255,255,255))
-        score_r = font.render(str(Pscore2), True, (255,255,255))
-        window.blit(score_l,(30,10))
-        window.blit(score_r,(win_width-45,10))
+        score_lA = font.render(str(Pscore1), True, (255,255,255))
+        score_lB = font.render(str(Pscore1), True, (204,204,204))
+        score_rA = font.render(str(Pscore2), True, (255,255,255))
+        score_rB = font.render(str(Pscore2), True, (204,204,204))
+        window.blit(score_lB,(32,12))
+        window.blit(score_lA,(30,10))
+        window.blit(score_rB,(win_width-43,12))
+        window.blit(score_rA,(win_width-45,10))
 
         if BallsInYoJaws.rect.x < -50:
             msound.play()
@@ -99,15 +106,15 @@ while game:
 
         if Pscore1 >= 3:
             finish = True
-            window.blit(lose1b, (212, 222))
-            window.blit(lose1a, (210, 220))
+            window.blit(lose2b, (212, 222))
+            window.blit(lose2a, (210, 220))
             BallsInYoJaws.rect.x = -50
             BallsInYoJaws.rect.y = -50
 
         if Pscore2 >= 3:
             finish = True
-            window.blit(lose2b, (212, 222))
-            window.blit(lose2a, (210, 220))
+            window.blit(lose1b, (212, 222))
+            window.blit(lose1a, (210, 220))
             BallsInYoJaws.rect.x = -50
             BallsInYoJaws.rect.y = -50
             
