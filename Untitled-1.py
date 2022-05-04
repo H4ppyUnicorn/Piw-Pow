@@ -1,9 +1,14 @@
 from pygame import *
-back = (0,0,0)
 win_width = 600
 win_height = 500
 window = display.set_mode((win_width, win_height))
-window.fill(back)
+background = transform.scale(image.load('bgr.jpg'), (win_width, win_height))
+mixer.init()
+mixer.music.load('brgr.ogg')
+mixer.music.set_volume(0.2)
+mixer.music.play()
+ssound = mixer.Sound('Rocket.ogg')
+msound = mixer.Sound('Miss.ogg')
 
 game = True
 finish = False
@@ -13,8 +18,11 @@ FPS = 90
 font.init()
 font = font.Font(None, 35)
 
-lose1 = font.render('PLAYER 1 LOSE!', True,(180,0,0))
-lose2 = font.render('PLAYER 2 LOSE!', True,(180,0,0))
+lose1a = font.render('PLAYER 1 LOSE!', True,(255,0,0))
+lose1b = font.render('PLAYER 1 LOSE!', True,(180,0,0))
+lose2a = font.render('PLAYER 2 LOSE!', True,(255,0,0))
+lose2b = font.render('PLAYER 2 LOSE!', True,(180,0,0))
+
 
 Pscore1 = 0
 Pscore2 = 0
@@ -32,21 +40,21 @@ class GameSprite(sprite.Sprite):
 class Player(GameSprite):
     def update_r(self):
         keys = key.get_pressed()
-        if keys[K_UP] and self.rect.y > 0:
+        if keys[K_UP] and self.rect.y > -10:
             self.rect.y -= self.speed
-        if keys[K_DOWN] and self.rect.y < win_height - 150:
+        if keys[K_DOWN] and self.rect.y < win_height - 100:
             self.rect.y += self.speed
     def update_l(self):
         keys = key.get_pressed()
-        if keys[K_w] and self.rect.y > 0:
+        if keys[K_w] and self.rect.y > -10:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y < win_height - 150:
+        if keys[K_s] and self.rect.y < win_height - 100:
             self.rect.y += self.speed
     
 
-Pong1 = Player('recta.png',0,120,20,150,5)
-Pong2 = Player('recta.png',580,120,20,150,5)
-BallsInYoJaws = GameSprite('Balls.png',250,200,40,40,16)
+Pong1 = Player('rocketaL.png',0,180,80,150,4)
+Pong2 = Player('rocketaR.png',520,180,80,150,4)
+BallsInYoJaws = GameSprite('Balls.png',250,200,40,40,25)
 
 dx = 3
 dy = 3
@@ -56,7 +64,7 @@ while game:
         if e.type == QUIT:
             game = False
     if finish != True:
-        window.fill(back)
+        window.blit(background,(0,0))
 
         Pong1.update_l()
         Pong2.update_r()
@@ -66,6 +74,7 @@ while game:
 
         if sprite.collide_rect(Pong1,BallsInYoJaws) or sprite.collide_rect(Pong2,BallsInYoJaws):
             dx *= ballspeed
+            ssound.play()
         if BallsInYoJaws.rect.y < 0 or BallsInYoJaws.rect.y > win_height-40:
             dy *= -1
 
@@ -75,17 +84,33 @@ while game:
         window.blit(score_r,(win_width-45,10))
 
         if BallsInYoJaws.rect.x < -50:
+            msound.play()
             Pscore2 += 1
             BallsInYoJaws.rect.x = 280
             BallsInYoJaws.rect.x = 280
             ballspeed = -1
 
         if BallsInYoJaws.rect.x > win_width +10:
+            msound.play()
             Pscore1 += 1
             BallsInYoJaws.rect.x = 280
             BallsInYoJaws.rect.x = 280
             ballspeed = -1
 
+        if Pscore1 >= 3:
+            finish = True
+            window.blit(lose1b, (212, 222))
+            window.blit(lose1a, (210, 220))
+            BallsInYoJaws.rect.x = -50
+            BallsInYoJaws.rect.y = -50
+
+        if Pscore2 >= 3:
+            finish = True
+            window.blit(lose2b, (212, 222))
+            window.blit(lose2a, (210, 220))
+            BallsInYoJaws.rect.x = -50
+            BallsInYoJaws.rect.y = -50
+            
         Pong1.reset()
         Pong2.reset()
         BallsInYoJaws.reset()
