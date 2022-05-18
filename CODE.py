@@ -40,15 +40,11 @@ class GameSprite(pygame.sprite.Sprite):
 class Player(GameSprite):
     def update_r(self):
         keys = pygame.key.get_pressed()
-        if self.rect.y < win_height - 100:
-            self.rect.y += 1
         if keys[pygame.K_UP] and self.rect.y > -10:
             self.rect.y -= self.speed
         if keys[pygame.K_DOWN] and self.rect.y < win_height - 100:
             self.rect.y += self.speed
     def update_l(self):
-        if self.rect.y < win_height - 100:
-            self.rect.y += 1
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and self.rect.y > -10:
             self.rect.y -= self.speed
@@ -77,7 +73,7 @@ while game:
         BallsInYoJaws.rect.y += dy
 
         if pygame.sprite.collide_rect(Pong1,BallsInYoJaws) or pygame.sprite.collide_rect(Pong2,BallsInYoJaws):
-            dx *= ballspeed
+            dx *= ballspeed - 0.1
             ssound.play()
         if BallsInYoJaws.rect.y < 0 or BallsInYoJaws.rect.y > win_height-40:
             dy *= -1
@@ -97,6 +93,7 @@ while game:
             BallsInYoJaws.rect.x = 280
             BallsInYoJaws.rect.x = 280
             ballspeed = -1
+            dx = 3
 
         if BallsInYoJaws.rect.x > win_width +10:
             msound.play()
@@ -104,6 +101,7 @@ while game:
             BallsInYoJaws.rect.x = 280
             BallsInYoJaws.rect.x = 280
             ballspeed = -1
+            dx = 3
 
         if Pscore1 >= 3:
             finish = True
