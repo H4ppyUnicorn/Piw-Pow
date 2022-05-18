@@ -1,21 +1,22 @@
-from pygame import *
+import pygame
+import time
 win_width = 600
 win_height = 500
-window = display.set_mode((win_width, win_height))
-background = transform.scale(image.load('bgr.jpg'), (win_width, win_height))
-mixer.init()
-mixer.music.load('brgr.ogg')
-mixer.music.set_volume(0.2)
-mixer.music.play()
-ssound = mixer.Sound('Rocket.ogg')
-msound = mixer.Sound('Miss.ogg')
+window = pygame.display.set_mode((win_width, win_height))
+background = pygame.transform.scale(pygame.image.load('bgr.jpg'), (win_width, win_height))
+pygame.mixer.init()
+pygame.mixer.music.load('brgr.ogg')
+pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.play(-1)
+ssound = pygame.mixer.Sound('Rocket.ogg')
+msound = pygame.mixer.Sound('Miss.ogg')
 game = True
 finish = False
-clock = time.Clock()
+clock = pygame.time.Clock()
 FPS = 90
 
-font.init()
-font = font.Font(None, 35)
+pygame.font.init()
+font = pygame.font.Font(None, 35)
 
 lose1a = font.render('PLAYER 1 LOSE!', True,(255,0,0))
 lose1b = font.render('PLAYER 1 LOSE!', True,(180,0,0))
@@ -26,10 +27,10 @@ lose2b = font.render('PLAYER 2 LOSE!', True,(180,0,0))
 Pscore1 = 0
 Pscore2 = 0
 
-class GameSprite(sprite.Sprite):
+class GameSprite(pygame.sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
         super().__init__()
-        self.image = transform.scale(image.load(player_image), (size_x, size_y))
+        self.image = pygame.transform.scale(pygame.image.load(player_image), (size_x, size_y))
         self.speed = player_speed
         self.rect = self.image.get_rect()
         self.rect.x = player_x
@@ -38,20 +39,20 @@ class GameSprite(sprite.Sprite):
         window.blit(self.image, (self.rect.x, self.rect.y))
 class Player(GameSprite):
     def update_r(self):
-        keys = key.get_pressed()
+        keys = pygame.key.get_pressed()
         if self.rect.y < win_height - 100:
             self.rect.y += 1
-        if keys[K_UP] and self.rect.y > -10:
+        if keys[pygame.K_UP] and self.rect.y > -10:
             self.rect.y -= self.speed
-        if keys[K_DOWN] and self.rect.y < win_height - 100:
+        if keys[pygame.K_DOWN] and self.rect.y < win_height - 100:
             self.rect.y += self.speed
     def update_l(self):
         if self.rect.y < win_height - 100:
             self.rect.y += 1
-        keys = key.get_pressed()
-        if keys[K_w] and self.rect.y > -10:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and self.rect.y > -10:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y < win_height - 100:
+        if keys[pygame.K_s] and self.rect.y < win_height - 100:
             self.rect.y += self.speed
     
 
@@ -63,8 +64,8 @@ dx = 3
 dy = 3
 ballspeed = -1
 while game:
-    for e in event.get():
-        if e.type == QUIT:
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
             game = False
     if finish != True:
         window.blit(background,(0,0))
@@ -75,7 +76,7 @@ while game:
         BallsInYoJaws.rect.x += dx
         BallsInYoJaws.rect.y += dy
 
-        if sprite.collide_rect(Pong1,BallsInYoJaws) or sprite.collide_rect(Pong2,BallsInYoJaws):
+        if pygame.sprite.collide_rect(Pong1,BallsInYoJaws) or pygame.sprite.collide_rect(Pong2,BallsInYoJaws):
             dx *= ballspeed
             ssound.play()
         if BallsInYoJaws.rect.y < 0 or BallsInYoJaws.rect.y > win_height-40:
@@ -122,5 +123,5 @@ while game:
         Pong2.reset()
         BallsInYoJaws.reset()
     
-    display.update()
+    pygame.display.update()
     clock.tick(FPS)
